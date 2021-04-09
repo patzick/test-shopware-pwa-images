@@ -1,0 +1,1 @@
+# test-shopware-pwa-images
