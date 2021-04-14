@@ -10,12 +10,12 @@ export default async (request: VercelRequest, response: VercelResponse) => {
   const outputFormat =
     request.headers?.accept?.split(",")?.find((el) => el.includes("image/")) ||
     "image/jpeg";
-  let format = outputFormat.split("/")?.[1] || "jpeg";
+  let format = request.query.f || outputFormat.split("/")?.[1] || "jpeg";
 
   // image/webp,*/*
   // image/avif,image/webp,image/apng,image/*,*/*;q=0.8
 
-  const preferredWith = parseInt(request.query.w as string) || 100;
+  const preferredWith = parseInt(request.query.w as string) || null;
   const preferredHeight = parseInt(request.query.h as string) || null;
   console.log("input dimentions", preferredWith, preferredHeight);
   console.log("desired output format", outputFormat, format);
@@ -34,10 +34,13 @@ export default async (request: VercelRequest, response: VercelResponse) => {
     // const bf = await imageFromAPI.buffer()
     const buffer = await imageFromAPI.buffer(); // Buffer.from(imageFromAPI.data, "binary");
     // const buffer = Buffer.from(bf, "binary");
-    let result = await sharp(buffer).resize({
-      width: preferredWith,
-      height: preferredHeight,
-    });
+    let result = await sharp(buffer);
+    if (preferredWith || preferredHeight) {
+      result = await result.resize({
+        width: preferredWith,
+        height: preferredHeight,
+      });
+    }
     // .avif({ quality: 60, speed: 7 })
     switch (format) {
       // result = await result.avif({ quality: 60, speed: 8 });
