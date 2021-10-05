@@ -25,7 +25,7 @@ export default async (request: VercelRequest, response: VercelResponse) => {
   // response.status(200).send(`Hello ${name}!`);
   try {
     const imageFromAPI = await fetch(
-      `https://pwa-demo-api.shopware.com/prev/${request.query.url}`
+      `https://pwa-demo-api.shopware.com/trunk/${request.query.url}`
       // {
       //   responseType: "arraybuffer",
       // }
